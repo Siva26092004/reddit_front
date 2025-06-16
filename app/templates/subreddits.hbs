@@ -1,0 +1,39 @@
+// app/templates/subreddits.hbs
+<div class="subreddits-page">
+  <h2>Subreddits</h2>
+  
+  <div class="create-subreddit">
+    <h3>Create New Subreddit</h3>
+    <form {{action 'createSubreddit' on='submit'}}>
+      <div class="form-group">
+        <label for="name">Subreddit Name:</label>
+        {{input type="text" id="name" value=name placeholder="Enter subreddit name"}}
+      </div>
+      
+      <div class="form-group">
+        <label for="description">Description:</label>
+        {{textarea id="description" value=description placeholder="Describe your subreddit"}}
+      </div>
+      
+      <button type="submit" class="btn btn-primary">Create Subreddit</button>
+    </form>
+  </div>
+  
+  <div class="subreddits-list">
+    <h3>All Subreddits</h3>
+    <button {{action 'loadSubreddits'}} class="btn btn-secondary">Refresh List</button>
+    
+    {{#if subreddits}}
+      <ul class="subreddit-list">
+        {{#each subreddits as |subreddit|}}
+          <li class="subreddit-item">
+            <h4>r/{{subreddit.name}}</h4>
+            <p>{{subreddit.description}}</p>
+          </li>
+        {{/each}}
+      </ul>
+    {{else}}
+      <p>No subreddits found.</p>
+    {{/if}}
+  </div>
+</div>

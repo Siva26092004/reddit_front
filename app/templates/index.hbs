@@ -1,0 +1,10 @@
+// app/templates/index.hbs
+<div class="index-page">
+  <h1>Welcome to Reddit Clone</h1>
+  <p>Please {{#link-to 'login'}}login{{/link-to}} or {{#link-to 'register'}}register{{/link-to}} to get started.</p>
+  
+  <div class="quick-links">
+    {{#link-to 'home' class="btn btn-primary"}}View Home{{/link-to}}
+    {{#link-to 'subreddits' class="btn btn-secondary"}}Browse Subreddits{{/link-to}}
+  </div>
+</div>

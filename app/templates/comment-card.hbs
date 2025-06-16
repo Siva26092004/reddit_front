@@ -1,0 +1,95 @@
+
+<li class="comment-card">
+  <p class="comment-meta">
+    User ID: {{comment.user_id}} | Posted on {{comment.created_at}}
+  </p>
+  <p class="comment-content">{{comment.content}}</p>
+
+  {{!-- Vote Controls for Comments --}}
+  <div class="vote-controls">
+    <button {{action 'upvoteTarget' comment.id 'comment'}} class="vote-button upvote-button">▲</button>
+    <span class="vote-count">{{comment.upvote_count}}</span>
+    <button {{action 'downvoteTarget' comment.id 'comment'}} class="vote-button downvote-button">▼</button>
+    <span class="downvote-count">{{comment.downvote_count}}</span>
+  </div>
+
+  {{#if auth.isAuthenticated}}
+    <div class="reply-actions">
+      <button {{action 'toggleReplyForm' comment.id}} class="reply-button">Reply</button>
+    </div>
+  {{/if}}
+  {{!-- Reply Form --}}
+  {{#if (eq showingReplyFormFor comment.id)}}
+    <div class="reply-form">
+      <h4>Reply to this comment</h4>
+      <p class="replying-as">Replying as: <strong>{{auth.currentUser.username}}</strong></p>
+      <form {{action 'addReply' comment.id on='submit'}}>
+        <div class="form-group">
+          <label for="replyContent-{{comment.id}}">Your Reply:</label>
+          {{textarea id="replyContent-{{comment.id}}" value=replyContent placeholder="Write your reply here..."}}
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Reply</button>
+        <button type="button" {{action 'cancelReply'}} class="btn btn-secondary cancel-reply">Cancel</button>
+      </form>
+    </div>
+  {{/if}}
+  {{!-- Nested Replies --}}
+  {{#if comment.replies.length}}
+    <ul class="replies-list">
+      {{#each comment.replies as |reply|}}
+        <li class="comment-card reply">
+          <p class="comment-meta">
+            User ID: {{reply.user_id}} | Posted on {{reply.created_at}}
+          </p>
+          <p class="comment-content">{{reply.content}}</p>
+          {{!-- Vote Controls for Replies --}}
+          <div class="vote-controls">
+            <button {{action 'upvoteTarget' reply.id 'comment'}} class="vote-button upvote-button">▲</button>
+            <span class="vote-count">{{reply.upvote_count}}</span>
+            <button {{action 'downvoteTarget' reply.id 'comment'}} class="vote-button downvote-button">▼</button>
+            <span class="downvote-count">{{reply.downvote_count}}</span>
+          </div>
+          {{#if auth.isAuthenticated}}
+            <div class="reply-actions">
+              <button {{action 'toggleReplyForm' reply.id}} class="reply-button">Reply</button>
+            </div>
+          {{/if}}
+          {{!-- Reply Form for nested replies --}}
+          {{#if (eq showingReplyFormFor reply.id)}}
+            <div class="reply-form">
+              <h4>Reply to this comment</h4>
+              <p class="replying-as">Replying as: <strong>{{auth.currentUser.username}}</strong></p>
+              <form {{action 'addReply' reply.id on='submit'}}>
+                <div class="form-group">
+                  <label for="replyContent-{{reply.id}}">Your Reply:</label>
+                  {{textarea id="replyContent-{{reply.id}}" value=replyContent placeholder="Write your reply here..."}}
+                </div>
+                <button type="submit" class="btn btn-primary">Submit Reply</button>
+                <button type="button" {{action 'cancelReply'}} class="btn btn-secondary cancel-reply">Cancel</button>
+              </form>
+            </div>
+          {{/if}}
+          {{!-- Nested replies (limited to prevent deep nesting) --}}
+          {{#if reply.replies.length}}
+            <ul class="replies-list nested">
+              {{#each reply.replies as |nestedReply|}}
+                <li class="comment-card nested-reply">
+                  <p class="comment-meta">
+                    User ID: {{nestedReply.user_id}} | Posted on {{nestedReply.created_at}}
+                  </p>
+                  <p class="comment-content">{{nestedReply.content}}</p>
+                  <div class="vote-controls">
+                    <button {{action 'upvoteTarget' nestedReply.id 'comment'}} class="vote-button upvote-button">▲</button>
+                    <span class="vote-count">{{nestedReply.upvote_count}}</span>
+                    <button {{action 'downvoteTarget' nestedReply.id 'comment'}} class="vote-button downvote-button">▼</button>
+                    <span class="downvote-count">{{nestedReply.downvote_count}}</span>
+                  </div>
+                </li>
+              {{/each}}
+            </ul>
+          {{/if}}
+        </li>
+      {{/each}}
+    </ul>
+  {{/if}}
+</li>

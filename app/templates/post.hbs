@@ -1,0 +1,83 @@
+<div class="post-detail">
+  <div class="post-header">
+    <h1>{{post.title}}</h1>
+    <p class="post-meta">
+      Posted by User ID: {{post.user_id}} in r/{{post.subreddit_name}} | {{post.created_at}}
+    </p>
+  </div>
+
+  <div class="post-content">
+    <p>{{post.content}}</p>
+  {{!-- Display Media --}}<p>{{post.media.media_url}}</p>
+   {{#each post.media as |mediaItem|}}
+              {{#if mediaItem.media_url}}
+                <div class="media-container">
+                  <p class="media-type-info">Type: {{mediaItem.media_type}} | URL: {{mediaItem.media_url}}</p>
+                  <img src="{{mediaItem.media_url}}" 
+                       alt="Post Media" 
+                       class="media-item image-responsive"
+                       onload="this.style.display='block'; this.nextElementSibling.style.display='none';"
+                       onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                       style="display: block;">     
+                  <div class="video-container" style="display: none;">
+                    <video controls 
+                           class="media-item video-responsive"
+                           onloadeddata="this.parentElement.style.display='block'; this.parentElement.nextElementSibling.style.display='none';"
+                           onerror="this.parentElement.style.display='none'; this.parentElement.nextElementSibling.style.display='block';">
+                      <source src="{{mediaItem.media_url}}" type="video/mp4">
+                      <source src="{{mediaItem.media_url}}" type="video/webm">
+                      <source src="{{mediaItem.media_url}}" type="video/ogg">
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                  <div class="link-container" style="display: none;">
+                    <a href="{{mediaItem.media_url}}" target="_blank" class="media-link">
+                      📎 View Media File ({{mediaItem.media_type}})
+                    </a>
+                  </div>
+                </div>
+              {{/if}}
+            {{/each}}
+  </div>
+
+  {{!-- Vote Controls for Post --}}
+  <div class="vote-controls">
+    <button {{action 'upvoteTarget' post.id 'post'}} class="vote-button upvote-button">▲</button>
+    <span class="vote-count">{{post.upvote_count}}</span>
+    <button {{action 'downvoteTarget' post.id 'post'}} class="vote-button downvote-button">▼</button>
+    <span class="downvote-count">{{post.downvote_count}}</span>
+  </div>
+
+  {{!-- Comment Form --}}
+  {{#if auth.isAuthenticated}}
+    <div class="comment-form">
+      <h3>Add a Comment</h3>
+      <p class="commenting-as">Commenting as: <strong>{{auth.currentUser.username}}</strong></p>
+      <form {{action 'addComment' on='submit'}}>
+        <div class="form-group">
+          <label for="commentContent">Your Comment:</label>
+          {{textarea id="commentContent" value=commentContent placeholder="Write your comment here..."}}
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Comment</button>
+      </form>
+    </div>
+  {{else}}
+    <div class="auth-required">
+      <p>{{#link-to 'login'}}Login{{/link-to}} to add comments.</p>
+    </div>
+  {{/if}}
+
+  {{!-- Comments List --}}
+  <div class="comments-section">
+    <h3>Comments ({{comments.length}})</h3>
+    {{#if comments.length}}
+      <ul class="comments-list">
+        {{#each comments as |comment|}}
+          {{partial 'comment-card' comment=comment}}
+        {{/each}}
+      </ul>
+    {{else}}
+      <p class="no-comments">No comments yet. Be the first to comment!</p>
+    {{/if}}
+  </div>
+</div>
