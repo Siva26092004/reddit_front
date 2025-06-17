@@ -1,0 +1,100 @@
+<div class="profile-page">
+  <div class="profile-header">
+    <h1>{{model.user.username}}'s Profile</h1>
+    <div class="profile-info">
+      <p><strong>Email:</strong> {{model.user.email}}</p>
+      <p><strong>Member since:</strong> {{model.user.created_at}}</p>
+    </div>
+  </div>
+
+  <div class="profile-content">
+    <div class="profile-section">
+      <h2>My Posts ({{model.userPosts.length}})</h2>
+      {{#if model.userPosts}}
+        <div class="posts-list">
+        <h3>All Posts</h3>
+        {{#each model.userPosts as |post|}}
+          <div class="post-card" {{action 'openPost' post.id}}>
+            <h3>{{post.title}}</h3>
+            <p class="post-content">{{post.content}}</p>
+            <p class="post-meta">
+              Posted by User ID: {{post.user_id}} 
+              on {{post.created_at}}
+            </p>
+           {{#if post.media}}
+                  <div class="post-media">
+                    {{#each post.media as |mediaItem|}}
+                      {{#if mediaItem.media_url}}
+                        <div class="media-container">
+                          <img src="{{mediaItem.media_url}}" 
+                               alt="Post Media" 
+                               class="media-item image-responsive"
+                               onload="this.style.display='block'; this.nextElementSibling.style.display='none';"
+                               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                               style="display: block;">     
+                          <div class="video-container" style="display: none;">
+                            <video controls 
+                                   class="media-item video-responsive"
+                                   onloadeddata="this.parentElement.style.display='block'; this.parentElement.nextElementSibling.style.display='none';"
+                                   onerror="this.parentElement.style.display='none'; this.parentElement.nextElementSibling.style.display='block';">
+                              <source src="{{mediaItem.media_url}}" type="video/mp4">
+                              <source src="{{mediaItem.media_url}}" type="video/webm">
+                              <source src="{{mediaItem.media_url}}" type="video/ogg">
+                              Your browser does not support the video tag.
+                            </video>
+                          </div>
+                          <div class="link-container" style="display: none;">
+                            <a href="{{mediaItem.media_url}}" target="_blank" class="media-link">
+                              📎 View Media File ({{mediaItem.media_type}})
+                            </a>
+                          </div>
+                        </div>
+                      {{/if}}
+                    {{/each}}
+                  </div>
+                {{/if}}
+           
+            
+          </div>
+          {{!-- Vote Controls for Post --}}
+          <div class="vote-controls">
+            <button {{action 'upvotePost' post.id}} class="vote-button upvote-button">▲</button>
+            <span class="vote-count">{{post.upvote_count}}</span>
+            <button {{action 'downvotePost' post.id}} class="vote-button downvote-button">▼</button>
+            <span class="downvote-count">{{post.downvote_count}}</span>
+          </div>
+          
+        {{/each}}
+      </div>
+      {{else}}
+        <div class="empty-state">
+          <p>You haven't created any posts yet.</p>
+          {{#link-to 'create-post' class="btn btn-primary"}}Create Your First Post{{/link-to}}
+        </div>
+      {{/if}}
+    </div>
+
+    <div class="profile-section">
+      <h2>My Subreddits ({{model.userSubreddits.length}})</h2>
+      {{#if model.userSubreddits}}
+        <div class="subreddits-grid">
+          {{#each model.userSubreddits as |subreddit|}}
+            <div class="subreddit-card" {{action 'goToSubreddit' subreddit.id}}>
+              <h3>r/{{subreddit.name}}</h3>
+              <p>{{subreddit.description}}</p>
+              <div class="subreddit-meta">
+                <span>Created: {{subreddit.created_at}}</span>
+                <span>Posts: {{subreddit.post_count}}</span>
+              </div>
+            </div>
+          {{/each}}
+        </div>
+      {{else}}
+        <div class="empty-state">
+          <p>You haven't created any subreddits yet.</p>
+          {{#link-to 'create-subreddit' class="btn btn-secondary"}}Create Your First Subreddit{{/link-to}}
+        </div>
+      {{/if}}
+    </div>
+  </div>
+</div>

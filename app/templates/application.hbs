@@ -5,7 +5,9 @@
   <div class="nav-links">
     {{#link-to 'home'}}Home{{/link-to}}
     {{#if auth.isAuthenticated}}
-      <span class="user-greeting">Welcome, {{auth.currentUser.username}}!</span>
+      {{#link-to 'profile' class="user-greeting-link"}}
+        <span class="user-greeting">Welcome, {{auth.currentUser.username}}!</span>
+      {{/link-to}}
       {{#link-to 'create-post'}}Create Post{{/link-to}}
       <button {{action 'logout'}} class="btn btn-link logout-btn">Logout</button>
     {{else}}
@@ -14,7 +16,6 @@
     {{/if}}
   </div>
 </nav>
-
 <main class="main-content">
   {{outlet}}
 </main>

@@ -5,22 +5,7 @@
     <button {{action 'goToCreatePost'}} class="btn btn-primary">Create New Post</button>
     <button {{action 'goToCreateSubreddit'}} class="btn btn-secondary">Create Subreddit</button>
   </div>
-  <div class="subreddits-list">
-    <h3>Available Subreddits</h3>
-    {{#if model.subreddits}}
-      <ul class="subreddit-list">
-        {{#each model.subreddits as |subreddit|}}
-          <li class="subreddit-item" {{action 'selectSubreddit' subreddit.id}}>
-            <h4>r/{{subreddit.name}}</h4>
-            <p>{{subreddit.description}}</p>
-          </li>
-        {{/each}}
-      </ul>
-    {{else}}
-      <p>No subreddits available. Create one!</p>
-    {{/if}}
-  </div>
-  
+
   {{#if selectedSubreddit}}
     <div class="selected-subreddit">
       <h3>r/{{selectedSubreddit.name}}</h3>
@@ -28,63 +13,84 @@
     </div>
   {{/if}}
 
-  <div class="posts-list">
-    <h3>All Posts</h3>
-    {{#each model.posts as |post|}}
-      <div class="post-card" {{action 'openPost' post.id}}>
-          <h3>{{post.title}}</h3>
-        <p class="post-content">{{post.content}}</p>
-        <p class="post-meta">
-          Posted by User ID: {{post.user_id}} in r/{{post.subreddit_id}}
-          on {{post.created_at}}
-        </p>
-       
-        {{!-- Display Media --}}
-        {{#if post.media}}
-          <div class="post-media">
-            {{#each post.media as |mediaItem|}}
-              {{#if mediaItem.media_url}}
-                <div class="media-container">
-                 
-                  <img src="{{mediaItem.media_url}}" 
-                       alt="Post Media" 
-                       class="media-item image-responsive"
-                       onload="this.style.display='block'; this.nextElementSibling.style.display='none';"
-                       onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
-                       style="display: block;">     
-                  <div class="video-container" style="display: none;">
-                    <video controls 
-                           class="media-item video-responsive"
-                           onloadeddata="this.parentElement.style.display='block'; this.parentElement.nextElementSibling.style.display='none';"
-                           onerror="this.parentElement.style.display='none'; this.parentElement.nextElementSibling.style.display='block';">
-                      <source src="{{mediaItem.media_url}}" type="video/mp4">
-                      <source src="{{mediaItem.media_url}}" type="video/webm">
-                      <source src="{{mediaItem.media_url}}" type="video/ogg">
-                      Your browser does not support the video tag.
-                    </video>
-                  </div>
-                  <div class="link-container" style="display: none;">
-                    <a href="{{mediaItem.media_url}}" target="_blank" class="media-link">
-                      📎 View Media File ({{mediaItem.media_type}})
-                    </a>
-                  </div>
-                </div>
-              {{/if}}
+  <div class="main-content">
+    <div class="sidebar">
+      <div class="subreddits-list">
+        <h3>Available Subreddits</h3>
+        {{#if model.subreddits}}
+          <ul class="subreddit-list">
+            {{#each model.subreddits as |subreddit|}}
+              <li class="subreddit-item" {{action 'selectSubreddit' subreddit.id}}>
+                <h4>r/{{subreddit.name}}</h4>
+                <p>{{subreddit.description}}</p>
+              </li>
             {{/each}}
-          </div>
+          </ul>
+        {{else}}
+          <p>No subreddits available. Create one!</p>
         {{/if}}
-        
       </div>
-       {{!-- Vote Controls for Post --}}
-        <div class="vote-controls">
-          <button {{action 'upvotePost' post.id}} class="vote-button upvote-button">▲</button>
-          <span class="vote-count">{{post.upvote_count}}</span>
-          <button {{action 'downvotePost' post.id}} class="vote-button downvote-button">▼</button>
-          <span class="downvote-count">{{post.downvote_count}}</span>
-        </div>
-    {{else}}
-      <p>No posts available yet. Be the first to create one!</p>
-    {{/each}}
+    </div>
+
+    <div class="main-feed">
+      <div class="posts-list">
+        <h3>All Posts</h3>
+        {{#each model.posts as |post|}}
+          <div class="post-card" {{action 'openPost' post.id}}>
+            <h3>{{post.title}}</h3>
+            <p class="post-content">{{post.content}}</p>
+            <p class="post-meta">
+              Posted by User ID: {{post.user_id}} 
+              on {{post.created_at}}
+            </p>
+           
+            {{!-- Display Media --}}
+            {{#if post.media}}
+              <div class="post-media">
+                {{#each post.media as |mediaItem|}}
+                  {{#if mediaItem.media_url}}
+                    <div class="media-container">
+                     
+                      <img src="{{mediaItem.media_url}}" 
+                           alt="Post Media" 
+                           class="media-item image-responsive"
+                           onload="this.style.display='block'; this.nextElementSibling.style.display='none';"
+                           onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                           style="display: block;">     
+                      <div class="video-container" style="display: none;">
+                        <video controls 
+                               class="media-item video-responsive"
+                               onloadeddata="this.parentElement.style.display='block'; this.parentElement.nextElementSibling.style.display='none';"
+                               onerror="this.parentElement.style.display='none'; this.parentElement.nextElementSibling.style.display='block';">
+                          <source src="{{mediaItem.media_url}}" type="video/mp4">
+                          <source src="{{mediaItem.media_url}}" type="video/webm">
+                          <source src="{{mediaItem.media_url}}" type="video/ogg">
+                          Your browser does not support the video tag.
+                        </video>
+                      </div>
+                      <div class="link-container" style="display: none;">
+                        <a href="{{mediaItem.media_url}}" target="_blank" class="media-link">
+                          📎 View Media File ({{mediaItem.media_type}})
+                        </a>
+                      </div>
+                    </div>
+                  {{/if}}
+                {{/each}}
+              </div>
+            {{/if}}
+            
+          </div>
+          {{!-- Vote Controls for Post --}}
+          <div class="vote-controls">
+            <button {{action 'upvotePost' post.id}} class="vote-button upvote-button">▲</button>
+            <span class="vote-count">{{post.upvote_count}}</span>
+            <button {{action 'downvotePost' post.id}} class="vote-button downvote-button">▼</button>
+            <span class="downvote-count">{{post.downvote_count}}</span>
+          </div>
+        {{else}}
+          <p>No posts available yet. Be the first to create one!</p>
+        {{/each}}
+      </div>
+    </div>
   </div>
 </div>
-

@@ -13,6 +13,7 @@ Router.map(function() {
   this.route('create-post');
   this.route('post', { path: '/posts/:post_id' });
    this.route('subreddit', { path: '/r/:subreddit_id' });
+    this.route('profile');
 });
 
 export default Router;

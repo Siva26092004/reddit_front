@@ -12,7 +12,6 @@
     <button {{action 'downvoteTarget' comment.id 'comment'}} class="vote-button downvote-button">▼</button>
     <span class="downvote-count">{{comment.downvote_count}}</span>
   </div>
-
   {{#if auth.isAuthenticated}}
     <div class="reply-actions">
       <button {{action 'toggleReplyForm' comment.id}} class="reply-button">Reply</button>

@@ -16,7 +16,7 @@ export default Ember.Controller.extend({
       targetType: targetType, // 'post' or 'comment'
       voteType: voteType      // 1: upvote, -1: downvote, 0: remove
     };
-
+    
     Ember.$.ajax({
       url: 'http://localhost:8080/reddit_server/api/votes',
       method: 'POST',
