@@ -12,7 +12,7 @@ export default Ember.Controller.extend({
     return (a, b) => a === b;
   }),
 
-  // Improved error response parser
+  // Improved error response parser 
   parseErrorResponse(jqXHR, textStatus, errorThrown) {
     let errorMessage = 'Unknown error';
     
