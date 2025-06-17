@@ -1,13 +1,6 @@
 /* global Ember */
 export default Ember.Controller.extend({
-  subreddits: [],
-  selectedSubreddit: null,
   userId: 1,
-
-  init() {
-    this._super(...arguments);
-    this.loadSubreddits();
-  },
 
   sendVote(targetId, targetType, voteType) {
     const currentUserId = this.get('userId');
@@ -41,35 +34,16 @@ export default Ember.Controller.extend({
     });
   },
 
-  loadSubreddits() {
-    Ember.$.ajax({
-      url: 'http://localhost:8080/reddit_server/api/subreddits',
-      method: 'GET',
-      success: (data) => {
-        this.set('subreddits', data);
-        if (data.length > 0 && !this.get('subredditId')) {
-          this.set('subredditId', data[0].id);
-        }
-      },
-      error: (err) => {
-        console.error('Failed to load subreddits:', err);
-      }
-    });
-  },
-
   actions: {
-    selectSubreddit(subredditId) {
-      // Navigate to the individual subreddit page instead of just selecting
-      console.log('Selected subreddit ID:', subredditId);
-      this.transitionToRoute('subreddit', subredditId);
+    createPost() {
+      // Navigate to create-post with subreddit context
+      this.transitionToRoute('create-post', {
+        queryParams: { subreddit_id: this.get('model.subreddit.id') }
+      });
     },
 
-    goToCreatePost() {
-      this.transitionToRoute('create-post');
-    },
-
-    goToCreateSubreddit() {
-      this.transitionToRoute('create-subreddits');
+    openPost(postId) {
+      this.transitionToRoute('post', postId);
     },
 
     upvotePost(postId) {
@@ -84,8 +58,8 @@ export default Ember.Controller.extend({
       this.get('target').send('refreshModel');
     },
 
-    openPost(postId) {
-      this.transitionToRoute('post', postId);
+    goBack() {
+      this.transitionToRoute('home');
     }
   }
 });

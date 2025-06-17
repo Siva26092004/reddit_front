@@ -2,12 +2,12 @@
 export default Ember.Controller.extend({
   auth: Ember.inject.service(),
   
-  // Form data properties
+ 
   commentContent: '',
   replyContent: '',
   showingReplyFormFor: null,
 
-  // Helper computed property for template equality checks
+  // Helper equality checks
   eq: Ember.computed(function() {
     return (a, b) => a === b;
   }),
@@ -103,7 +103,7 @@ export default Ember.Controller.extend({
   },
 
   actions: {
-    // Action to add a new top-level comment to the post
+   
     addComment() {
       // Check if user is authenticated
       if (!this.get('auth.isAuthenticated')) {
@@ -143,11 +143,8 @@ export default Ember.Controller.extend({
         postId: parseInt(postId),
         userId: parseInt(userId),
         content: content.trim()
-        // No parentCommentId for top-level comments
+        
       };
-
-      // DEBUG: Log the payload being sent
-      console.log('DEBUG - Comment payload being sent:', JSON.stringify(payload, null, 2));
 
       Ember.$.ajax({
         url: 'http://localhost:8080/reddit_server/api/comments',

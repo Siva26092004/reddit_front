@@ -24,8 +24,7 @@ export default Ember.Route.extend({
         return []; // Return empty array on error
       }
     );
-    
-   //wait for all promises to resolve
+    //wait for all promises to resolve
     return Ember.RSVP.hash({
       posts: postsPromise,
       subreddits: subredditsPromise,

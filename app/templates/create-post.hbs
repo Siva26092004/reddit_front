@@ -1,47 +1,49 @@
 <div class="create-post-page">
-  <h2>Create New Post</h2>
-  {{#if auth.isAuthenticated}}
-    <p class="user-info">Posting as: <strong>{{auth.currentUser.username}}</strong> (ID: {{auth.currentUser.id}})</p>
-    <form {{action 'createPost' on='submit'}}>
+  <h1>Create New Post</h1>
+  
+  {{#if preselectedSubredditName}}
+    <div class="preselected-subreddit">
+      <p>Posting to: <strong>r/{{preselectedSubredditName}}</strong></p>
+      <p class="help-text">You're creating a post in this subreddit</p>
+    </div>
+  {{/if}}
+
+  <div class="form-container">
+    <div class="form-group">
+      <label for="title">Title:</label>
+      {{input type="text" id="title" value=title placeholder="Enter post title" class="form-control"}}
+    </div>
+
+    <div class="form-group">
+      <label for="content">Content:</label>
+      {{textarea id="content" value=content placeholder="Enter post content" class="form-control"}}
+    </div>
+
+    {{!-- Only show subreddit selector if not coming from a specific subreddit --}}
+    {{#unless preselectedSubredditName}}
       <div class="form-group">
-        <label for="subreddit">Select Subreddit:</label>
-        <select id="subreddit" onchange={{action (mut subredditId) value="target.value"}} disabled={{isLoading}}>
-          <option value="">Choose a subreddit</option>
+        <label for="subreddit">Subreddit:</label>
+        <select id="subreddit" onchange={{action (mut subredditId) value="target.value"}} class="form-control">
+          <option value="">Select a subreddit</option>
           {{#each subreddits as |subreddit|}}
-            <option value="{{subreddit.id}}" selected={{eq subredditId subreddit.id}}>r/{{subreddit.name}}</option>
+            <option value={{subreddit.id}} selected={{eq subredditId subreddit.id}}>
+              r/{{subreddit.name}} - {{subreddit.description}}
+            </option>
           {{/each}}
         </select>
       </div>
-      <div class="form-group">
-        <label for="title">Post Title:</label>
-        {{input type="text" id="title" value=title placeholder="Enter post title" disabled=isLoading}}
-      </div>
-      <div class="form-group">
-        <label for="content">Content:</label>
-        {{textarea id="content" value=content placeholder="Write your post content here..." disabled=isLoading}}
-      </div>
+    {{/unless}}
 
-      <div class="form-group">
-        <label for="mediaFile">Upload Image/Video (Optional):</label>
-        <input type="file" id="mediaFile" onchange={{action (mut mediaFile) value="target.files.0"}} accept="image/*,video/*" disabled={{isLoading}}>
-        {{#if mediaFile}}
-          <p class="file-selected">Selected: {{mediaFile.name}}</p>
-        {{/if}}
-      </div>
-      
-      <div class="form-actions">
-        <button type="submit" class="btn btn-primary" disabled={{isLoading}}>
-          {{#if isLoading}}Creating Post...{{else}}Create Post{{/if}}
-        </button>
-        <button type="button" {{action 'cancelPost'}} class="btn btn-secondary" disabled={{isLoading}}>Cancel</button>
-      </div>
-    </form>
-  {{else}}
-    <div class="auth-required">
-      <p>You must be logged in to create a post.</p>
-      {{#link-to 'login' class="btn btn-primary"}}Login{{/link-to}}
-      {{#link-to 'register' class="btn btn-secondary"}}Register{{/link-to}}
+    <div class="form-group">
+      <label for="media">Media (optional):</label>
+      <input type="file" id="media" onchange={{action 'handleFileChange'}} accept="image/*,video/*" class="form-control">
     </div>
-  {{/if}}
-</div>
 
+    <div class="form-actions">
+      <button type="button" class="btn btn-primary" {{action 'createPost'}} disabled={{isLoading}}>
+        {{#if isLoading}}Creating...{{else}}Create Post{{/if}}
+      </button>
+      <button type="button" class="btn btn-secondary" {{action 'cancelPost'}}>Cancel</button>
+    </div>
+  </div>
+</div>

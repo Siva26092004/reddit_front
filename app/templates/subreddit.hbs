@@ -1,0 +1,90 @@
+<div class="subreddit-page">
+  
+  {{#if model.subreddit}}
+    <div class="subreddit-header">
+      <h1>r/{{model.subreddit.name}}</h1>
+      <p class="subreddit-description">{{model.subreddit.description}}</p>
+  
+    </div>
+
+    <div class="posts-section">
+    
+      {{#if model.posts}}
+        {{#if model.posts.length}}
+          <div class="posts-list">
+            <p>Rendering {{model.posts.length}} posts:</p>
+            {{#each model.posts as |post|}}
+              <div class="post-card" {{action 'openPost' post.id}}>
+                <h3 class="post-title">{{post.title}}</h3>
+                <p class="post-content">{{post.content}}</p>
+                <p class="post-meta">
+                  Posted by User ID: {{post.user_id}} 
+                  on {{post.created_at}}
+                </p>
+               
+                {{!-- Display Media --}}
+                {{#if post.media}}
+                  <div class="post-media">
+                    {{#each post.media as |mediaItem|}}
+                      {{#if mediaItem.media_url}}
+                        <div class="media-container">
+                          <img src="{{mediaItem.media_url}}" 
+                               alt="Post Media" 
+                               class="media-item image-responsive"
+                               onload="this.style.display='block'; this.nextElementSibling.style.display='none';"
+                               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                               style="display: block;">     
+                          <div class="video-container" style="display: none;">
+                            <video controls 
+                                   class="media-item video-responsive"
+                                   onloadeddata="this.parentElement.style.display='block'; this.parentElement.nextElementSibling.style.display='none';"
+                                   onerror="this.parentElement.style.display='none'; this.parentElement.nextElementSibling.style.display='block';">
+                              <source src="{{mediaItem.media_url}}" type="video/mp4">
+                              <source src="{{mediaItem.media_url}}" type="video/webm">
+                              <source src="{{mediaItem.media_url}}" type="video/ogg">
+                              Your browser does not support the video tag.
+                            </video>
+                          </div>
+                          <div class="link-container" style="display: none;">
+                            <a href="{{mediaItem.media_url}}" target="_blank" class="media-link">
+                              📎 View Media File ({{mediaItem.media_type}})
+                            </a>
+                          </div>
+                        </div>
+                      {{/if}}
+                    {{/each}}
+                  </div>
+                {{/if}}
+                
+                {{!-- Vote Controls for Post --}}
+                <div class="vote-controls">
+                  <button {{action 'upvotePost' post.id}} class="vote-button upvote-button">▲</button>
+                  <span class="vote-count">{{post.upvote_count}}</span>
+                  <button {{action 'downvotePost' post.id}} class="vote-button downvote-button">▼</button>
+                  <span class="downvote-count">{{post.downvote_count}}</span>
+                </div>
+              </div>
+            {{/each}}
+          </div>
+        {{else}}
+          <div class="no-posts">
+            <p>No posts in this subreddit yet. (Posts array is empty)</p>
+            {{#link-to 'create-post' (query-params subreddit_id=model.subreddit.id) class="btn btn-primary"}}
+              Be the first to post!
+            {{/link-to}}
+          </div>
+        {{/if}}
+      {{else}}
+        <div class="loading-posts">
+          <p>Posts data is null or undefined</p>
+        </div>
+      {{/if}}
+    </div>
+  {{else}}
+    <div class="subreddit-not-found">
+      <h1>Subreddit Not Found</h1>
+      <p>The subreddit you're looking for doesn't exist.</p>
+      {{#link-to 'home' class="btn btn-primary"}}Back to Home{{/link-to}}
+    </div>
+  {{/if}}
+</div>

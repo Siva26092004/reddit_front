@@ -14,16 +14,13 @@ export default Ember.Route.extend({
   setupController(controller, model) {
     this._super(controller, model);
     
-    // Set the post and comments on the controller
     controller.set('post', model.post);
     controller.set('comments', model.comments);
     
-    // Clear form fields
     controller.set('commentContent', '');
     controller.set('replyContent', '');
     controller.set('showingReplyFormFor', null);
     
-    // DEBUG: Log what we're setting
     console.log('DEBUG - setupController setting post:', model.post);
     console.log('DEBUG - setupController setting comments:', model.comments);
   },
@@ -59,7 +56,7 @@ export default Ember.Route.extend({
         },
         error: (jqXHR, textStatus, errorThrown) => {
           console.error('Failed to load comments:', errorThrown);
-          // Don't reject if comments fail - just return empty array
+      
           resolve([]);
         }
       });
